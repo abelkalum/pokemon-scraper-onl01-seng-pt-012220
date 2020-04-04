@@ -10,19 +10,8 @@ class Pokemon
     @@all << self
   end
   
-  def save
-   if !@id
-      sql = <<-SQL
-        INSERT INTO pokemons (name, type, db)
-        VALUES (?, ?, ?)
-      SQL
-
-      DB[:conn].execute(sql, self.name, self.type, self.db)
-      @id = DB[:conn].execute("SELECT last_insert_rowid() FROM pokemons")[0][0]
-   else
-      sql = "UPDATE pokemons SET name = ? WHERE id = ? db = ?"
-      DB[:conn].execute(sql, @name, @id, @db)
-   end
+  def self.save(name, type, database_connection)
+    database_connection.execute("INSERT INTO pokemon (name, type) VALUES (?, ?)", name, type)
   end
   
   def find
